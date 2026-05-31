@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: linear-gradient(135deg, #F7FAF9, #EEF3F1);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  transition: all 0.5s ease;
+  color: #1E2A27;
+}
+
+/* Minimal Input Styles */
+input, select, textarea {
+  background-color: #FBFDFC !important;
+  border-color: #E3EAE7 !important;
+  color: #1E2A27 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3A8F73 !important;
+  box-shadow: 0 0 0 2px rgba(58, 143, 115, 0.1) !important;
+}
+
+/* Global Button Refinement */
+button.bg-primary {
+  background-color: #3A8F73 !important;
+  color: #FFFFFF !important;
+}
+
+button.bg-primary:hover {
+  background-color: #327D64 !important;
+}
+
+/* Scrollbar Refinement */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7FAF9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E3EAE7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6FB7A1;
+}
+
+.glass {
+  @apply bg-white/90 backdrop-blur-md border border-[#E6ECEA]/40 shadow-sm;
+}
+
+.card-style {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #E6ECEA;
+  box-shadow: 0 4px 20px rgba(30, 42, 39, 0.05);
+}
