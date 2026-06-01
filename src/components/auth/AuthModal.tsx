@@ -16,7 +16,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
     const [loading, setLoading] = useState(false);
     const [otpStep, setOtpStep] = useState(false);
     const [otp, setOtp] = useState(['', '', '', '']);
-    
+
     // Forgot Password states
     const [forgotStep, setForgotStep] = useState<'none' | 'email' | 'reset'>('none');
     const [forgotOtp, setForgotOtp] = useState(['', '', '', '']);
@@ -129,7 +129,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to reset password');
-            
+
             // Success
             setForgotStep('none');
             setIsLogin(true);
@@ -147,7 +147,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl relative">
                 {/* Header */}
                 <div className="bg-primary p-6 text-center relative">
-                    <button 
+                    <button
                         onClick={onClose}
                         className="absolute right-4 top-4 p-2 bg-black/10 hover:bg-black/20 rounded-full transition-colors"
                     >
@@ -158,8 +158,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                     </h2>
                     <p className="text-black/80 font-bold mt-1">
                         {forgotStep === 'email' ? 'Enter your email to receive a reset code' :
-                         forgotStep === 'reset' ? 'Enter the verification code and new password' :
-                         (isLogin ? 'Login to book your favorite turf' : 'Create an account to start playing')}
+                            forgotStep === 'reset' ? 'Enter the verification code and new password' :
+                                (isLogin ? 'Login to book your favorite turf' : 'Create an account to start playing')}
                     </p>
                 </div>
 
@@ -175,8 +175,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                             <label className="text-xs font-black text-text-description uppercase tracking-widest">Email Address</label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                <input 
-                                    type="email" 
+                                <input
+                                    type="email"
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -185,15 +185,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                 />
                             </div>
                         </div>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleSendForgotOtp}
                             disabled={loading}
                             className="w-full py-4 bg-primary hover:bg-primary-dark text-black font-black rounded-xl transition-all flex items-center justify-center disabled:opacity-50 mt-4 shadow-lg shadow-primary/20"
                         >
                             {loading ? 'Sending...' : 'Send Reset Code'}
                         </button>
-                        <button 
+                        <button
                             type="button"
                             onClick={() => setForgotStep('none')}
                             className="w-full text-text-secondary hover:text-primary font-bold text-sm mt-4 text-center"
@@ -234,8 +234,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                             <label className="text-xs font-black text-text-description uppercase tracking-widest">New Password</label>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                <input 
-                                    type="password" 
+                                <input
+                                    type="password"
                                     required
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
@@ -245,7 +245,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                             </div>
                         </div>
                         {error && <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100 mt-4 text-left">{error}</div>}
-                        <button 
+                        <button
                             type="button"
                             onClick={handleResetPassword}
                             disabled={loading || forgotOtp.some(d => !d)}
@@ -253,7 +253,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                         >
                             {loading ? 'Resetting...' : 'Reset Password'}
                         </button>
-                        <button 
+                        <button
                             type="button"
                             onClick={() => setForgotStep('email')}
                             className="text-text-secondary hover:text-primary font-bold text-sm mt-4"
@@ -292,7 +292,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                             ))}
                         </div>
                         {error && <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100 mt-4">{error}</div>}
-                        <button 
+                        <button
                             type="button"
                             onClick={handleVerifyOtp}
                             disabled={loading || otp.some(d => !d)}
@@ -300,7 +300,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                         >
                             {loading ? 'Verifying...' : 'Verify & Join'}
                         </button>
-                        <button 
+                        <button
                             type="button"
                             onClick={() => setOtpStep(false)}
                             className="text-text-secondary hover:text-primary font-bold text-sm mt-4"
@@ -322,8 +322,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                     <label className="text-xs font-black text-text-description uppercase tracking-widest">Full Name</label>
                                     <div className="relative">
                                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             required
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
@@ -338,8 +338,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                 <label className="text-xs font-black text-text-description uppercase tracking-widest">Email Address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                    <input 
-                                        type="email" 
+                                    <input
+                                        type="email"
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -353,9 +353,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                 <div className="flex justify-between items-center">
                                     <label className="text-xs font-black text-text-description uppercase tracking-widest">Password</label>
                                     {isLogin && (
-                                        <button 
-                                            type="button" 
-                                            onClick={() => setForgotStep('email')} 
+                                        <button
+                                            type="button"
+                                            onClick={() => setForgotStep('email')}
                                             className="text-xs font-bold text-primary hover:underline"
                                         >
                                             Forgot Password?
@@ -364,8 +364,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                 </div>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                    <input 
-                                        type="password" 
+                                    <input
+                                        type="password"
                                         required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -375,8 +375,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                 </div>
                             </div>
 
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 disabled={loading}
                                 className="w-full py-4 bg-primary hover:bg-primary-dark text-black font-black rounded-xl transition-all flex items-center justify-center group disabled:opacity-50 mt-4 shadow-lg shadow-primary/20"
                             >
@@ -389,7 +389,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                         <div className="border-t border-gray-100 p-6 text-center bg-gray-50">
                             <p className="text-text-secondary font-bold">
                                 {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-                                <button 
+                                <button
                                     type="button"
                                     onClick={() => {
                                         setIsLogin(!isLogin);

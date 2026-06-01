@@ -37,7 +37,7 @@ const Checkout: React.FC = () => {
                 const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     const img = parsed[0];
-                    firstImage = img.startsWith('/uploads') ? `http://localhost:5000${img}` : img;
+                    firstImage = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
                 }
             } else if (turf.imageUrl) {
                 firstImage = turf.imageUrl;
@@ -63,15 +63,15 @@ const Checkout: React.FC = () => {
     const rentalFee = slots ? slots.reduce((sum, slot) => sum + getSlotPrice(slot), 0) : 1200;
     const totalAmount = rentalFee;
     const handlePayment = () => {
-        navigate('/payment-options', { 
-            state: { 
-                totalAmount, 
-                turfId, 
-                turfName: turf?.name || 'Unknown Turf', 
-                date: new Date(date).toLocaleDateString(), 
+        navigate('/payment-options', {
+            state: {
+                totalAmount,
+                turfId,
+                turfName: turf?.name || 'Unknown Turf',
+                date: new Date(date).toLocaleDateString(),
                 rawDate: date,
-                slots 
-            } 
+                slots
+            }
         });
     };
 

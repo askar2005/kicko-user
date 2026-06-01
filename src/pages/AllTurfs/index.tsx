@@ -4,17 +4,17 @@ import { ChevronLeft, Search, MapPin } from 'lucide-react';
 import TurfCard from '../../components/TurfCard';
 
 const VIRUDHUNAGAR_CITIES = [
-    "Virudhunagar", "Sivakasi", "Rajapalayam", "Aruppukkottai", 
+    "Virudhunagar", "Sivakasi", "Rajapalayam", "Aruppukkottai",
     "Sattur", "Srivilliputhur", "Kariapatti", "Vathirairuppu",
     "Thiruthangal", "Seithur"
 ];
 
 const AllTurfs: React.FC = () => {
     const navigate = useNavigate();
-    
+
     const [searchQuery, setSearchQuery] = React.useState('');
     const [selectedLocation, setSelectedLocation] = React.useState('');
-    
+
     const [turfs, setTurfs] = React.useState<any[]>([]);
     const [filteredTurfs, setFilteredTurfs] = React.useState<any[]>([]);
     const [loading, setLoading] = React.useState(true);
@@ -33,7 +33,7 @@ const AllTurfs: React.FC = () => {
                                 const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
                                 if (Array.isArray(parsed) && parsed.length > 0) {
                                     const img = parsed[0];
-                                    imageUrl = img.startsWith('/uploads') ? `http://localhost:5000${img}` : img;
+                                    imageUrl = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
                                 }
                             }
                         } catch (e) {
@@ -44,7 +44,7 @@ const AllTurfs: React.FC = () => {
                             name: turf.name,
                             location: turf.location,
                             price: turf.pricePerHour || 1200,
-                            rating: 4.8, 
+                            rating: 4.8,
                             image: imageUrl,
                             available: true
                         };
@@ -103,7 +103,7 @@ const AllTurfs: React.FC = () => {
                     </div>
                     <div className="flex items-center px-4 py-2.5 bg-white rounded-xl border border-gray-100 shadow-sm focus-within:border-primary transition-colors w-full sm:w-auto">
                         <MapPin size={18} className="text-gray-400" />
-                        <select 
+                        <select
                             value={selectedLocation}
                             onChange={(e) => setSelectedLocation(e.target.value)}
                             className="bg-transparent border-none outline-none ml-2 text-text-primary text-sm font-medium w-full cursor-pointer appearance-none"

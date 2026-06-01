@@ -97,7 +97,7 @@ const ForgotPassword: React.FC = () => {
             {step === 'reset' && (
                 <form onSubmit={handleResetPassword} className="space-y-4">
                     <p className="text-sm font-bold text-center text-text-secondary mb-4">We've sent a 4-digit code to <span className="text-text-primary">{email}</span>.</p>
-                    
+
                     <div className="space-y-2">
                         <label className="text-xs font-black text-text-description uppercase tracking-widest ml-1">Verification Code (OTP)</label>
                         <div className="relative group">
@@ -150,7 +150,7 @@ const ForgotPassword: React.FC = () => {
                             </>
                         )}
                     </button>
-                    
+
                     <button
                         type="button"
                         onClick={() => setStep('email')}

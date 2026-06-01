@@ -52,7 +52,7 @@ const TurfDetail: React.FC = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
     const [turf, setTurf] = useState<any>(null);
-    const [dynamicSlots, setDynamicSlots] = useState<{time: string, status: string}[]>([]);
+    const [dynamicSlots, setDynamicSlots] = useState<{ time: string, status: string }[]>([]);
     const [loading, setLoading] = useState(true);
     const [reviews, setReviews] = useState<any[]>([]);
     const [userRating, setUserRating] = useState(5);
@@ -78,7 +78,7 @@ const TurfDetail: React.FC = () => {
                 } catch (e) {
                     console.error("Backend not running or turf not found");
                 }
-                
+
                 if (turfData) {
                     let parsedImages = [];
                     try {
@@ -91,7 +91,7 @@ const TurfDetail: React.FC = () => {
                     if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
                         parsedImages = turfData.imageUrl ? [turfData.imageUrl] : ['https://images.unsplash.com/photo-1529900948633-14664539659a?w=1200&auto=format&fit=crop'];
                     }
-                    parsedImages = parsedImages.map((img: string) => img.startsWith('/uploads') ? `http://localhost:5000${img}` : img);
+                    parsedImages = parsedImages.map((img: string) => img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img);
 
                     let parsedSlotPrices: Record<string, number> = {};
                     try {
@@ -142,7 +142,7 @@ const TurfDetail: React.FC = () => {
                     name: 'Green Field Arena (Fallback)',
                     location: 'Sector 62, Noida',
                     pricePerHour: 1200,
-                    price: 1200, 
+                    price: 1200,
                     rating: 4.8,
                     reviews: 124,
                     description: 'Start backend to see real DB data.',
@@ -170,12 +170,12 @@ const TurfDetail: React.FC = () => {
                     if (availabilityRes.ok) {
                         availabilityData = await availabilityRes.json();
                     }
-                } catch (e) {}
-                
-                const activeSlotsList = (turfData && turfData.activeSlots && turfData.activeSlots.length > 0) 
-                    ? turfData.activeSlots 
+                } catch (e) { }
+
+                const activeSlotsList = (turfData && turfData.activeSlots && turfData.activeSlots.length > 0)
+                    ? turfData.activeSlots
                     : SLOT_TIMES;
-                    
+
                 const effectiveSlots = Array.isArray(availabilityData.activeSlots) && availabilityData.activeSlots.length > 0
                     ? availabilityData.activeSlots
                     : activeSlotsList;
@@ -202,7 +202,7 @@ const TurfDetail: React.FC = () => {
                     if (revRes.ok) {
                         setReviews(await revRes.json());
                     }
-                } catch(e) {}
+                } catch (e) { }
 
             } catch (err) {
                 console.error("Failed to fetch turf details:", err);
@@ -222,13 +222,13 @@ const TurfDetail: React.FC = () => {
             setSlotTimers(prev => {
                 const updated = { ...prev };
                 let hasChanged = false;
-                
+
                 Object.keys(updated).forEach(slotTime => {
                     if (updated[slotTime] > 0) {
                         updated[slotTime] -= 1;
                         hasChanged = true;
                     }
-                    
+
                     // Auto-release when timer hits 0
                     if (updated[slotTime] === 0) {
                         setSelectedSlots(current => current.filter(s => s !== slotTime));
@@ -236,7 +236,7 @@ const TurfDetail: React.FC = () => {
                         hasChanged = true;
                     }
                 });
-                
+
                 return hasChanged ? updated : prev;
             });
         }, 1000);
@@ -343,264 +343,264 @@ const TurfDetail: React.FC = () => {
                 <div className="flex justify-center py-20 text-text-secondary">Loading...</div>
             ) : turf && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                {/* Left Content - Images & Info */}
-                <div className="lg:col-span-2 space-y-8">
-                    {/* Image Carousel */}
-                    <div className="relative h-[400px] md:h-[500px] rounded-[16px] overflow-hidden group shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
-                        <img
-                            src={turf.images[activeImageIndex]}
-                            className="w-full h-full object-cover transition-all duration-500"
-                            alt={turf.name}
-                        />
-
-                        {/* Carousel Controls */}
-                        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                                onClick={() => setActiveImageIndex(prev => (prev > 0 ? prev - 1 : turf.images.length - 1))}
-                                className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all"
-                            >
-                                <ChevronLeft size={24} />
-                            </button>
-                            <button
-                                onClick={() => setActiveImageIndex(prev => (prev < turf.images.length - 1 ? prev + 1 : 0))}
-                                className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all"
-                            >
-                                <ChevronRight size={24} />
-                            </button>
-                        </div>
-
-                        {/* Carousel Indicators */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
-                            {turf.images.map((_: any, idx: number) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => setActiveImageIndex(idx)}
-                                    className={`w-2 h-2 rounded-full transition-all ${idx === activeImageIndex ? 'w-8 bg-primary' : 'bg-white/40'}`}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Turf Info */}
-                    <div>
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                            <h1 className="text-4xl font-black tracking-tighter italic text-text-heading">{turf.name}</h1>
-                            <div className="flex items-center space-x-4">
-                                <div className="flex items-center text-yellow-600">
-                                    <Star fill="currentColor" size={20} />
-                                    <span className="ml-1 font-bold text-lg text-text-primary">{turf.rating}</span>
-                                    <span className="ml-1 text-text-secondary font-bold">({turf.reviews} {t.reviewsLabel})</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center text-text-secondary mb-8 font-bold">
-                            <MapPin size={18} className="mr-2 text-primary" />
-                            <span>{turf.location}</span>
-                        </div>
-
-                        <div className="space-y-6">
-                            <h3 className="text-xl font-bold text-text-heading">{t.aboutTurf}</h3>
-                            <p className="text-text-primary leading-relaxed text-lg font-medium">
-                                {turf.description}
-                            </p>
-                        </div>
-
-                        {/* Amenities */}
-                        <div className="pt-8 border-t border-gray-100 space-y-6">
-                            <h3 className="text-xl font-bold text-text-heading">{t.amenitiesLabel}</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {turf.amenities.map((amenity: any, idx: number) => (
-                                    <div key={idx} className="flex items-center p-4 rounded-[12px] bg-white border border-gray-100 shadow-sm">
-                                        <span className="text-primary mr-3">{amenity.icon}</span>
-                                        <span className="text-sm font-bold text-text-primary">{t[amenity.name as keyof typeof t] || amenity.name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Reviews Section */}
-                        <div className="pt-8 border-t border-gray-100 space-y-6">
-                            <h3 className="text-xl font-bold text-text-heading flex items-center">
-                                <Star className="text-yellow-500 mr-2" size={24} fill="currentColor" />
-                                User Reviews ({reviews.length})
-                            </h3>
-
-                            {/* Submit Review Form */}
-                            {currentUser && !hasUserReviewed && (
-                                <form onSubmit={handleReviewSubmit} className="bg-gray-50 p-6 rounded-xl border border-gray-100 mb-6">
-                                    <h4 className="font-bold mb-4">Leave a Review</h4>
-                                    <div className="flex items-center space-x-2 mb-4">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <button
-                                                type="button"
-                                                key={star}
-                                                onClick={() => setUserRating(star)}
-                                                className="text-yellow-500 transition-transform hover:scale-110"
-                                            >
-                                                <Star size={24} fill={userRating >= star ? "currentColor" : "none"} />
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <textarea
-                                        value={userComment}
-                                        onChange={(e) => setUserComment(e.target.value)}
-                                        placeholder="What did you think of this turf?"
-                                        className="w-full p-3 rounded-lg border border-gray-200 mb-4 focus:outline-primary font-medium"
-                                        rows={3}
-                                        required
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={submittingReview}
-                                        className="bg-primary px-6 py-2 rounded-full font-bold shadow-sm hover:bg-primary-dark transition-colors disabled:opacity-50 text-black"
-                                    >
-                                        {submittingReview ? 'Submitting...' : 'Submit Review'}
-                                    </button>
-                                </form>
-                            )}
-
-                            {currentUser && hasUserReviewed && (
-                                <div className="bg-primary/5 text-primary p-4 rounded-xl border border-primary/20 text-sm font-bold">
-                                    You have already reviewed this turf. Thanks for your feedback!
-                                </div>
-                            )}
-
-                            {!currentUser && (
-                                <button onClick={() => setIsAuthModalOpen(true)} className="text-primary font-bold hover:underline">
-                                    Log in to leave a review
-                                </button>
-                            )}
-
-                            {/* Reviews List */}
-                            <div className="space-y-4">
-                                {reviews.length > 0 ? (
-                                    reviews.map((review) => (
-                                        <div key={review.id} className="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div className="font-bold">{review.user?.name || "Anonymous"}</div>
-                                                <div className="flex">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} size={14} className={i < review.rating ? "text-yellow-500" : "text-gray-300"} fill={i < review.rating ? "currentColor" : "none"} />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-text-secondary text-sm font-medium">{review.comment}</p>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-text-secondary italic">No reviews yet. Be the first to review!</p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Content - Booking Sidebar */}
-                <div className="lg:col-span-1">
-                    <div className="sticky top-28 bg-white p-8 rounded-[16px] shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
-                        <div className="flex items-baseline justify-between mb-8">
-                            <span className="text-2xl font-black text-primary italic">
-                                {turf.slotPrices && Object.keys(turf.slotPrices).length > 0 
-                                    ? `Starting from ₹${Math.min(...Object.values(turf.slotPrices).map(p => Number(p)))}` 
-                                    : `₹${turf.pricePerHour || turf.price}`
-                                }
-                            </span>
-                            <span className="text-text-secondary font-bold">{t.perHour}</span>
-                        </div>
-
-                        {/* Date Selection */}
-                        <div className="space-y-4 mb-8">
-                            <label className="text-sm font-black text-text-description uppercase tracking-widest flex items-center">
-                                <CalendarIcon size={16} className="mr-2" />
-                                {t.selectDate}
-                            </label>
-                            <input
-                                type="date"
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
-                                min={today}
-                                className="w-full bg-white border border-gray-100 rounded-[12px] px-6 py-4 text-text-primary focus:border-primary outline-none transition-colors font-bold shadow-sm"
+                    {/* Left Content - Images & Info */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Image Carousel */}
+                        <div className="relative h-[400px] md:h-[500px] rounded-[16px] overflow-hidden group shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
+                            <img
+                                src={turf.images[activeImageIndex]}
+                                className="w-full h-full object-cover transition-all duration-500"
+                                alt={turf.name}
                             />
-                        </div>
 
-                        {/* Slot Selection */}
-                        <div className="space-y-4 mb-8">
-                            <label className="text-sm font-black text-text-description uppercase tracking-widest flex items-center">
-                                <Clock size={16} className="mr-2" />
-                                {t.selectSlot}
-                            </label>
-                            <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                {dynamicSlots.map((slot: { time: string; status: string }, idx: number) => (
+                            {/* Carousel Controls */}
+                            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => setActiveImageIndex(prev => (prev > 0 ? prev - 1 : turf.images.length - 1))}
+                                    className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all"
+                                >
+                                    <ChevronLeft size={24} />
+                                </button>
+                                <button
+                                    onClick={() => setActiveImageIndex(prev => (prev < turf.images.length - 1 ? prev + 1 : 0))}
+                                    className="w-12 h-12 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all"
+                                >
+                                    <ChevronRight size={24} />
+                                </button>
+                            </div>
+
+                            {/* Carousel Indicators */}
+                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+                                {turf.images.map((_: any, idx: number) => (
                                     <button
                                         key={idx}
-                                        disabled={slot.status === 'booked' || slot.status === 'blocked'}
-                                        onClick={() => toggleSlot(slot.time)}
-                                        className={`w-full px-6 py-4 rounded-xl text-sm font-bold border transition-all flex justify-between items-center group ${slot.status === 'booked'
-                                            ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-not-allowed line-through opacity-70'
-                                            : slot.status === 'blocked'
-                                                ? 'bg-rose-50 border-rose-200 text-rose-700 cursor-not-allowed line-through opacity-90'
-                                            : selectedSlots.includes(slot.time)
-                                                ? 'bg-primary border-primary text-black'
-                                                : 'bg-white border-gray-100 text-text-primary hover:border-primary/50 shadow-sm mb-1'
-                                            }`}
-                                    >
-                                        <div className="flex flex-col items-start text-left">
-                                            <span className="text-sm font-bold">{slot.time}</span>
-                                            {slot.status === 'available' && (
-                                                <span className={`text-xs mt-0.5 ${selectedSlots.includes(slot.time) ? 'text-black/70' : 'text-primary'}`}>
-                                                    ₹{getSlotPrice(slot.time)}
-                                                </span>
-                                            )}
-                                        </div>
-                                        {selectedSlots.includes(slot.time) && (
-                                            <div className="flex items-center space-x-2 bg-black/10 px-3 py-1 rounded-full">
-                                                <Timer size={14} className="animate-pulse" />
-                                                <span className="text-xs font-black">{formatTimer(slotTimers[slot.time])}</span>
-                                            </div>
-                                        )}
-                                    </button>
+                                        onClick={() => setActiveImageIndex(idx)}
+                                        className={`w-2 h-2 rounded-full transition-all ${idx === activeImageIndex ? 'w-8 bg-primary' : 'bg-white/40'}`}
+                                    />
                                 ))}
                             </div>
                         </div>
 
-                        {/* Total Price Breakdown */}
-                        {selectedSlots.length > 0 && (
-                            <div className="space-y-3 mb-8 p-4 rounded-[12px] bg-primary/5 border border-primary/10 animate-fade-in">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-text-secondary font-bold">{t.rentalFee} ({selectedSlots.length} {selectedSlots.length > 1 ? t.slots : t.slot})</span>
-                                    <span className="text-text-primary font-black">₹{calculateSelectedTotal()}</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-text-secondary font-bold">{t.serviceFee}</span>
-                                    <span className="text-text-primary font-black">₹50</span>
-                                </div>
-                                <div className="pt-3 border-t border-primary/10 flex justify-between font-bold text-lg">
-                                    <span className="text-text-primary">{t.total}</span>
-                                    <span className="text-primary italic font-black">₹{calculateSelectedTotal() + 50}</span>
+                        {/* Turf Info */}
+                        <div>
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                                <h1 className="text-4xl font-black tracking-tighter italic text-text-heading">{turf.name}</h1>
+                                <div className="flex items-center space-x-4">
+                                    <div className="flex items-center text-yellow-600">
+                                        <Star fill="currentColor" size={20} />
+                                        <span className="ml-1 font-bold text-lg text-text-primary">{turf.rating}</span>
+                                        <span className="ml-1 text-text-secondary font-bold">({turf.reviews} {t.reviewsLabel})</span>
+                                    </div>
                                 </div>
                             </div>
-                        )}
 
-                        <button
-                            disabled={selectedSlots.length === 0}
-                            onClick={handleBook}
-                            className="w-full py-5 bg-primary disabled:bg-gray-100 disabled:text-gray-400 hover:bg-primary-dark text-black font-black rounded-3xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98]"
-                        >
-                            {t.bookButton} {selectedSlots.length > 0 ? `${selectedSlots.length} ${selectedSlots.length > 1 ? t.slots : t.slot}` : t.slot}
-                        </button>
+                            <div className="flex items-center text-text-secondary mb-8 font-bold">
+                                <MapPin size={18} className="mr-2 text-primary" />
+                                <span>{turf.location}</span>
+                            </div>
 
-                        <p className="mt-4 text-center text-xs text-gray-500 font-bold">
-                            {t.slotsHeldMsg}
-                        </p>
+                            <div className="space-y-6">
+                                <h3 className="text-xl font-bold text-text-heading">{t.aboutTurf}</h3>
+                                <p className="text-text-primary leading-relaxed text-lg font-medium">
+                                    {turf.description}
+                                </p>
+                            </div>
+
+                            {/* Amenities */}
+                            <div className="pt-8 border-t border-gray-100 space-y-6">
+                                <h3 className="text-xl font-bold text-text-heading">{t.amenitiesLabel}</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    {turf.amenities.map((amenity: any, idx: number) => (
+                                        <div key={idx} className="flex items-center p-4 rounded-[12px] bg-white border border-gray-100 shadow-sm">
+                                            <span className="text-primary mr-3">{amenity.icon}</span>
+                                            <span className="text-sm font-bold text-text-primary">{t[amenity.name as keyof typeof t] || amenity.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Reviews Section */}
+                            <div className="pt-8 border-t border-gray-100 space-y-6">
+                                <h3 className="text-xl font-bold text-text-heading flex items-center">
+                                    <Star className="text-yellow-500 mr-2" size={24} fill="currentColor" />
+                                    User Reviews ({reviews.length})
+                                </h3>
+
+                                {/* Submit Review Form */}
+                                {currentUser && !hasUserReviewed && (
+                                    <form onSubmit={handleReviewSubmit} className="bg-gray-50 p-6 rounded-xl border border-gray-100 mb-6">
+                                        <h4 className="font-bold mb-4">Leave a Review</h4>
+                                        <div className="flex items-center space-x-2 mb-4">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                    type="button"
+                                                    key={star}
+                                                    onClick={() => setUserRating(star)}
+                                                    className="text-yellow-500 transition-transform hover:scale-110"
+                                                >
+                                                    <Star size={24} fill={userRating >= star ? "currentColor" : "none"} />
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <textarea
+                                            value={userComment}
+                                            onChange={(e) => setUserComment(e.target.value)}
+                                            placeholder="What did you think of this turf?"
+                                            className="w-full p-3 rounded-lg border border-gray-200 mb-4 focus:outline-primary font-medium"
+                                            rows={3}
+                                            required
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={submittingReview}
+                                            className="bg-primary px-6 py-2 rounded-full font-bold shadow-sm hover:bg-primary-dark transition-colors disabled:opacity-50 text-black"
+                                        >
+                                            {submittingReview ? 'Submitting...' : 'Submit Review'}
+                                        </button>
+                                    </form>
+                                )}
+
+                                {currentUser && hasUserReviewed && (
+                                    <div className="bg-primary/5 text-primary p-4 rounded-xl border border-primary/20 text-sm font-bold">
+                                        You have already reviewed this turf. Thanks for your feedback!
+                                    </div>
+                                )}
+
+                                {!currentUser && (
+                                    <button onClick={() => setIsAuthModalOpen(true)} className="text-primary font-bold hover:underline">
+                                        Log in to leave a review
+                                    </button>
+                                )}
+
+                                {/* Reviews List */}
+                                <div className="space-y-4">
+                                    {reviews.length > 0 ? (
+                                        reviews.map((review) => (
+                                            <div key={review.id} className="p-4 bg-white border border-gray-100 rounded-xl shadow-sm">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="font-bold">{review.user?.name || "Anonymous"}</div>
+                                                    <div className="flex">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Star key={i} size={14} className={i < review.rating ? "text-yellow-500" : "text-gray-300"} fill={i < review.rating ? "currentColor" : "none"} />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <p className="text-text-secondary text-sm font-medium">{review.comment}</p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-text-secondary italic">No reviews yet. Be the first to review!</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {/* Right Content - Booking Sidebar */}
+                    <div className="lg:col-span-1">
+                        <div className="sticky top-28 bg-white p-8 rounded-[16px] shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
+                            <div className="flex items-baseline justify-between mb-8">
+                                <span className="text-2xl font-black text-primary italic">
+                                    {turf.slotPrices && Object.keys(turf.slotPrices).length > 0
+                                        ? `Starting from ₹${Math.min(...Object.values(turf.slotPrices).map(p => Number(p)))}`
+                                        : `₹${turf.pricePerHour || turf.price}`
+                                    }
+                                </span>
+                                <span className="text-text-secondary font-bold">{t.perHour}</span>
+                            </div>
+
+                            {/* Date Selection */}
+                            <div className="space-y-4 mb-8">
+                                <label className="text-sm font-black text-text-description uppercase tracking-widest flex items-center">
+                                    <CalendarIcon size={16} className="mr-2" />
+                                    {t.selectDate}
+                                </label>
+                                <input
+                                    type="date"
+                                    value={selectedDate}
+                                    onChange={(e) => setSelectedDate(e.target.value)}
+                                    min={today}
+                                    className="w-full bg-white border border-gray-100 rounded-[12px] px-6 py-4 text-text-primary focus:border-primary outline-none transition-colors font-bold shadow-sm"
+                                />
+                            </div>
+
+                            {/* Slot Selection */}
+                            <div className="space-y-4 mb-8">
+                                <label className="text-sm font-black text-text-description uppercase tracking-widest flex items-center">
+                                    <Clock size={16} className="mr-2" />
+                                    {t.selectSlot}
+                                </label>
+                                <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {dynamicSlots.map((slot: { time: string; status: string }, idx: number) => (
+                                        <button
+                                            key={idx}
+                                            disabled={slot.status === 'booked' || slot.status === 'blocked'}
+                                            onClick={() => toggleSlot(slot.time)}
+                                            className={`w-full px-6 py-4 rounded-xl text-sm font-bold border transition-all flex justify-between items-center group ${slot.status === 'booked'
+                                                ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-not-allowed line-through opacity-70'
+                                                : slot.status === 'blocked'
+                                                    ? 'bg-rose-50 border-rose-200 text-rose-700 cursor-not-allowed line-through opacity-90'
+                                                    : selectedSlots.includes(slot.time)
+                                                        ? 'bg-primary border-primary text-black'
+                                                        : 'bg-white border-gray-100 text-text-primary hover:border-primary/50 shadow-sm mb-1'
+                                                }`}
+                                        >
+                                            <div className="flex flex-col items-start text-left">
+                                                <span className="text-sm font-bold">{slot.time}</span>
+                                                {slot.status === 'available' && (
+                                                    <span className={`text-xs mt-0.5 ${selectedSlots.includes(slot.time) ? 'text-black/70' : 'text-primary'}`}>
+                                                        ₹{getSlotPrice(slot.time)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            {selectedSlots.includes(slot.time) && (
+                                                <div className="flex items-center space-x-2 bg-black/10 px-3 py-1 rounded-full">
+                                                    <Timer size={14} className="animate-pulse" />
+                                                    <span className="text-xs font-black">{formatTimer(slotTimers[slot.time])}</span>
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Total Price Breakdown */}
+                            {selectedSlots.length > 0 && (
+                                <div className="space-y-3 mb-8 p-4 rounded-[12px] bg-primary/5 border border-primary/10 animate-fade-in">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-text-secondary font-bold">{t.rentalFee} ({selectedSlots.length} {selectedSlots.length > 1 ? t.slots : t.slot})</span>
+                                        <span className="text-text-primary font-black">₹{calculateSelectedTotal()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-text-secondary font-bold">{t.serviceFee}</span>
+                                        <span className="text-text-primary font-black">₹50</span>
+                                    </div>
+                                    <div className="pt-3 border-t border-primary/10 flex justify-between font-bold text-lg">
+                                        <span className="text-text-primary">{t.total}</span>
+                                        <span className="text-primary italic font-black">₹{calculateSelectedTotal() + 50}</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            <button
+                                disabled={selectedSlots.length === 0}
+                                onClick={handleBook}
+                                className="w-full py-5 bg-primary disabled:bg-gray-100 disabled:text-gray-400 hover:bg-primary-dark text-black font-black rounded-3xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98]"
+                            >
+                                {t.bookButton} {selectedSlots.length > 0 ? `${selectedSlots.length} ${selectedSlots.length > 1 ? t.slots : t.slot}` : t.slot}
+                            </button>
+
+                            <p className="mt-4 text-center text-xs text-gray-500 font-bold">
+                                {t.slotsHeldMsg}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             )}
 
-            <AuthModal 
-                isOpen={isAuthModalOpen} 
-                onClose={() => setIsAuthModalOpen(false)} 
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={() => setIsAuthModalOpen(false)}
                 onSuccess={() => {
                     setIsAuthModalOpen(false);
                     // Automatically proceed to checkout after successful login

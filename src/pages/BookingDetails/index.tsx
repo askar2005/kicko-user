@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    Calendar, 
-    Clock, 
-    MapPin, 
-    ChevronLeft, 
-    Download, 
-    CheckCircle, 
-    XCircle, 
-    AlertCircle, 
+import {
+    Calendar,
+    Clock,
+    MapPin,
+    ChevronLeft,
+    Download,
+    CheckCircle,
+    XCircle,
+    AlertCircle,
     Hash,
     User,
     CreditCard
@@ -55,9 +55,9 @@ const BookingDetails: React.FC = () => {
 
     const downloadReceipt = () => {
         if (!booking) return;
-        
+
         const doc = new jsPDF();
-        
+
         // Header
         doc.setFontSize(22);
         doc.setTextColor(34, 197, 94); // Primary Green
@@ -65,11 +65,11 @@ const BookingDetails: React.FC = () => {
         doc.setFontSize(10);
         doc.setTextColor(100);
         doc.text('Turf Booking Receipt', 20, 26);
-        
+
         // Horizontal Line
         doc.setDrawColor(240);
         doc.line(20, 32, 190, 32);
-        
+
         // Content
         doc.setFontSize(12);
         doc.setTextColor(0);
@@ -77,45 +77,45 @@ const BookingDetails: React.FC = () => {
         doc.text('Booking Status:', 20, 45);
         doc.setFont('helvetica', 'normal');
         doc.text(booking.status, 60, 45);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Booking ID:', 20, 55);
         doc.setFont('helvetica', 'normal');
         doc.text(booking.id, 60, 55);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Turf Name:', 20, 65);
         doc.setFont('helvetica', 'normal');
         doc.text(booking.turfName, 60, 65);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Location:', 20, 75);
         doc.setFont('helvetica', 'normal');
         doc.text(booking.location, 60, 75);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Date:', 20, 85);
         doc.setFont('helvetica', 'normal');
         doc.text(new Date(booking.date).toLocaleDateString(), 60, 85);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Time Slot:', 20, 95);
         doc.setFont('helvetica', 'normal');
         doc.text(booking.time, 60, 95);
-        
+
         doc.line(20, 105, 190, 105);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('Amount Paid:', 20, 115);
         doc.setFontSize(14);
         doc.text(`INR ${booking.price}`, 60, 115);
-        
+
         // Footer
         doc.setFontSize(10);
         doc.setTextColor(150);
         doc.text('Thank you for booking with KICKO!', 20, 150);
         doc.text('Please arrive 15 minutes before your slot.', 20, 156);
-        
+
         doc.save(`KICKO_Receipt_${booking.id}.pdf`);
     };
 
@@ -153,7 +153,7 @@ const BookingDetails: React.FC = () => {
                 <h1 className="text-2xl font-black italic tracking-tighter text-text-heading">{t.bookingDetails}</h1>
             </div>
 
-            <motion.div 
+            <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 className="bg-white rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden"
@@ -170,12 +170,12 @@ const BookingDetails: React.FC = () => {
                     <div className="text-right flex items-center space-x-2">
                         {getStatusIcon(booking.status)}
                         <span className="font-black text-text-heading text-sm uppercase">
-                            {booking.status === 'CONFIRMED' ? t.statusConfirmed : 
-                             booking.status === 'CANCELLED' ? t.statusCancelled :
-                             booking.status === 'EXPIRED' ? t.statusExpired :
-                             booking.status === 'FAILED' ? t.statusFailed :
-                             booking.status === 'REFUNDED' ? t.statusRefunded :
-                             booking.status === 'PENDING_VERIFICATION' ? t.statusPending : booking.status}
+                            {booking.status === 'CONFIRMED' ? t.statusConfirmed :
+                                booking.status === 'CANCELLED' ? t.statusCancelled :
+                                    booking.status === 'EXPIRED' ? t.statusExpired :
+                                        booking.status === 'FAILED' ? t.statusFailed :
+                                            booking.status === 'REFUNDED' ? t.statusRefunded :
+                                                booking.status === 'PENDING_VERIFICATION' ? t.statusPending : booking.status}
                         </span>
                     </div>
                 </div>
@@ -231,7 +231,7 @@ const BookingDetails: React.FC = () => {
 
                 {/* Actions */}
                 <div className="p-8 bg-gray-50">
-                    <button 
+                    <button
                         onClick={downloadReceipt}
                         className="w-full py-4 bg-white hover:bg-primary hover:text-text-primary text-text-primary border border-gray-200 hover:border-primary font-black rounded-2xl transition-all flex items-center justify-center space-x-2 group shadow-sm active:scale-95"
                     >

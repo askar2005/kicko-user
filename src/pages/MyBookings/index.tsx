@@ -61,8 +61,8 @@ const MyBookings: React.FC = () => {
         fetchBookings();
     }, []);
 
-    const upcomingBookings = bookings.filter(b => new Date(b.date) >= new Date(new Date().setHours(0,0,0,0)) && b.status === 'CONFIRMED');
-    const pastBookings = bookings.filter(b => new Date(b.date) < new Date(new Date().setHours(0,0,0,0)) || b.status !== 'CONFIRMED');
+    const upcomingBookings = bookings.filter(b => new Date(b.date) >= new Date(new Date().setHours(0, 0, 0, 0)) && b.status === 'CONFIRMED');
+    const pastBookings = bookings.filter(b => new Date(b.date) < new Date(new Date().setHours(0, 0, 0, 0)) || b.status !== 'CONFIRMED');
 
     const filteredBookings = activeTab === 'UPCOMING' ? upcomingBookings : pastBookings;
 
@@ -131,12 +131,12 @@ const MyBookings: React.FC = () => {
                                             <h3 className="text-xl font-bold mb-1 text-text-heading">{booking.turfName}</h3>
                                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border flex items-center shadow-sm ${getStatusStyles(booking.status)}`}>
                                                 {getStatusIcon(booking.status)}
-                                                {booking.status === 'CONFIRMED' ? t.statusConfirmed : 
-                                                 booking.status === 'CANCELLED' ? t.statusCancelled :
-                                                 booking.status === 'EXPIRED' ? t.statusExpired :
-                                                 booking.status === 'FAILED' ? t.statusFailed :
-                                                 booking.status === 'REFUNDED' ? t.statusRefunded :
-                                                 booking.status === 'PENDING_VERIFICATION' ? t.statusPending : booking.status}
+                                                {booking.status === 'CONFIRMED' ? t.statusConfirmed :
+                                                    booking.status === 'CANCELLED' ? t.statusCancelled :
+                                                        booking.status === 'EXPIRED' ? t.statusExpired :
+                                                            booking.status === 'FAILED' ? t.statusFailed :
+                                                                booking.status === 'REFUNDED' ? t.statusRefunded :
+                                                                    booking.status === 'PENDING_VERIFICATION' ? t.statusPending : booking.status}
                                             </span>
                                         </div>
                                         <div className="flex items-center text-text-secondary text-sm mb-4 font-bold">
@@ -165,7 +165,7 @@ const MyBookings: React.FC = () => {
                                             <div className="font-extrabold text-primary">₹{booking.price}</div>
                                         </div>
                                         <div className="flex items-end justify-end">
-                                            <button 
+                                            <button
                                                 onClick={() => navigate(`/booking-details/${booking.id}`)}
                                                 className="flex items-center text-sm font-bold text-text-secondary hover:text-primary transition-colors"
                                             >

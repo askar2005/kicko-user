@@ -42,16 +42,16 @@ const OTPVerification: React.FC = () => {
 
         const enteredOtp = otp.join('');
         const storedUserStr = localStorage.getItem("signup-user");
-        
+
         if (!storedUserStr) {
-             alert("Session expired. Please register again.");
-             navigate('/register');
-             return;
+            alert("Session expired. Please register again.");
+            navigate('/register');
+            return;
         }
 
         try {
             const storedUser = JSON.parse(storedUserStr);
-            
+
             // 1. Verify OTP
             const verifyRes = await fetch("http://localhost:5000/api/auth/verify-otp", {
                 method: "POST",
@@ -59,30 +59,30 @@ const OTPVerification: React.FC = () => {
                 body: JSON.stringify({ email: storedUser.email, otp: enteredOtp })
             });
             const verifyData = await verifyRes.json();
-            
+
             if (!verifyRes.ok) throw new Error(verifyData.error || "Failed to verify OTP");
-            
+
             // 2. Register User in Database
             const regRes = await fetch("http://localhost:5000/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                   name: storedUser.name,
-                   email: storedUser.email,
-                   password: storedUser.password
+                    name: storedUser.name,
+                    email: storedUser.email,
+                    password: storedUser.password
                 })
             });
             const regData = await regRes.json();
-            
+
             if (!regRes.ok) throw new Error(regData.error || "Registration failed");
 
             // 3. Success! Log them in
             localStorage.setItem("user-logged-in", "true");
             localStorage.setItem("current-user", JSON.stringify(regData));
-            
+
             // Clean up
             localStorage.removeItem("signup-user");
-            
+
             navigate('/');
         } catch (error: any) {
             alert(error.message);

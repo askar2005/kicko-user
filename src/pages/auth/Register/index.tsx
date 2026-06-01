@@ -14,7 +14,7 @@ const Register: React.FC = () => {
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!name || !email || !password) {
             alert("Please fill all fields");
             return;
@@ -34,9 +34,9 @@ const Register: React.FC = () => {
                 body: JSON.stringify({ email, name })
             });
             const data = await res.json();
-            
+
             if (!res.ok) throw new Error(data.error || "Failed to send OTP");
-            
+
             // Store user details for when OTP verification passes
             localStorage.setItem("signup-user", JSON.stringify({
                 name,

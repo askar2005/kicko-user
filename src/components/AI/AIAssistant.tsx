@@ -66,7 +66,7 @@ const AIAssistant: React.FC = () => {
 
         setTimeout(() => {
             const aiResponse = generateAIResponse(userMsg.text);
-            setMessages(prev => 
+            setMessages(prev =>
                 prev.map(msg => msg.id === aiTypingMsgId ? { ...msg, text: aiResponse, isTyping: false } : msg)
             );
         }, 600); // Super fast response
@@ -93,13 +93,13 @@ const AIAssistant: React.FC = () => {
 
         if (detectedCity) {
             const cityTurfs = turfs.filter(t => t.location.toLowerCase().includes(detectedCity!));
-            
+
             if (cityTurfs.length > 0) {
                 // Find highest rated turf in this city
                 const highestRated = cityTurfs.reduce((prev, current) => {
                     return (getTurfRating(prev) > getTurfRating(current)) ? prev : current;
                 });
-                
+
                 const rating = getTurfRating(highestRated);
                 const ratingStr = rating > 0 ? `${rating.toFixed(1)}/5 ⭐` : '(Pudhu turf, innum rating varala!)';
 
@@ -150,7 +150,7 @@ const AIAssistant: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             onClick={() => setIsOpen(false)}
                             className="p-2 bg-black/10 hover:bg-black/20 rounded-full transition-colors"
                         >
@@ -161,16 +161,15 @@ const AIAssistant: React.FC = () => {
                     {/* Messages Area */}
                     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
                         {messages.map((msg) => (
-                            <div 
-                                key={msg.id} 
+                            <div
+                                key={msg.id}
                                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div 
-                                    className={`max-w-[80%] rounded-2xl p-3 text-sm font-medium ${
-                                        msg.sender === 'user' 
-                                            ? 'bg-black text-white rounded-tr-sm' 
-                                            : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm'
-                                    }`}
+                                <div
+                                    className={`max-w-[80%] rounded-2xl p-3 text-sm font-medium ${msg.sender === 'user'
+                                        ? 'bg-black text-white rounded-tr-sm'
+                                        : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm'
+                                        }`}
                                     dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
                                 />
                             </div>
@@ -180,18 +179,18 @@ const AIAssistant: React.FC = () => {
 
                     {/* Input Area */}
                     <div className="p-4 bg-white border-t border-gray-100">
-                        <form 
+                        <form
                             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                             className="flex items-center space-x-2"
                         >
-                            <input 
+                            <input
                                 type="text"
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
                                 placeholder="Ask me anything..."
                                 className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-primary font-medium"
                             />
-                            <button 
+                            <button
                                 type="submit"
                                 disabled={!inputText.trim()}
                                 className="p-2 bg-primary text-black rounded-full hover:bg-primary-dark disabled:opacity-50 transition-colors"
@@ -205,7 +204,7 @@ const AIAssistant: React.FC = () => {
 
             {/* Toggle Button */}
             {!isOpen && (
-                <button 
+                <button
                     onClick={() => setIsOpen(true)}
                     className="w-14 h-14 bg-primary text-black rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform animate-bounce-slow border-2 border-white"
                 >

@@ -10,7 +10,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 // MOCK_TURFS removed to use backend data
 
 const VIRUDHUNAGAR_CITIES = [
-    "Virudhunagar", "Sivakasi", "Rajapalayam", "Aruppukkottai", 
+    "Virudhunagar", "Sivakasi", "Rajapalayam", "Aruppukkottai",
     "Sattur", "Srivilliputhur", "Kariapatti", "Vathirairuppu",
     "Thiruthangal", "Seithur"
 ];
@@ -19,11 +19,11 @@ const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => 
     const R = 6371; // Radius of the earth in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const d = R * c; // Distance in km
     return d;
 };
@@ -37,7 +37,7 @@ const isLocationMatch = (turf: any, selectedLoc: string) => {
 
     // Exact city match
     if (turfCity === sel) return true;
-    
+
     // Substring match in location or area
     if (turfLoc.includes(sel) || turfArea.includes(sel)) return true;
 
@@ -47,7 +47,7 @@ const isLocationMatch = (turf: any, selectedLoc: string) => {
             return true;
         }
     }
-    
+
     return false;
 };
 
@@ -91,8 +91,8 @@ const Home: React.FC = () => {
         // Apply search query filter if user typed something
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            result = result.filter(t => 
-                t.name.toLowerCase().includes(query) || 
+            result = result.filter(t =>
+                t.name.toLowerCase().includes(query) ||
                 t.location.toLowerCase().includes(query)
             );
         }
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
         // Apply selected sport category if selected
         if (selectedSport) {
             const sport = selectedSport.toLowerCase();
-            result = result.filter(t => 
+            result = result.filter(t =>
                 (t.sportType && t.sportType.toLowerCase().includes(sport)) ||
                 t.name.toLowerCase().includes(sport)
             );
@@ -123,7 +123,7 @@ const Home: React.FC = () => {
                                 const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
                                 if (Array.isArray(parsed) && parsed.length > 0) {
                                     const img = parsed[0];
-                                    imageUrl = img.startsWith('/uploads') ? `http://localhost:5000${img}` : img;
+                                    imageUrl = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
                                 }
                             }
                         } catch (e) {
@@ -174,7 +174,7 @@ const Home: React.FC = () => {
                         );
                         const data = await response.json();
                         const city = data.address.city || data.address.town || data.address.village || data.address.state_district;
-                        
+
                         if (city) {
                             setSelectedLocation(city);
                         } else {
@@ -251,9 +251,9 @@ const Home: React.FC = () => {
                                     <div className="flex items-center">
                                         <MapPin size={20} className="text-text-label group-hover:text-primary transition-colors" />
                                         <span className="ml-3 text-text-primary font-bold">
-                                            {isDetecting 
-                                                ? t.detecting 
-                                                : selectedLocation 
+                                            {isDetecting
+                                                ? t.detecting
+                                                : selectedLocation
                                                     ? VIRUDHUNAGAR_CITIES.find(c => c.toLowerCase() === selectedLocation) || selectedLocation
                                                     : t.selectLocation}
                                         </span>
@@ -265,7 +265,7 @@ const Home: React.FC = () => {
                                     <>
                                         {/* Backdrop to close dropdown on click outside */}
                                         <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
-                                        
+
                                         {/* Dropdown Menu */}
                                         <div className="absolute right-0 left-0 bottom-full mb-2 bg-white rounded-2xl border border-gray-100 shadow-xl z-50 py-2 max-h-60 overflow-y-auto animate-fade-in-up duration-200">
                                             {/* Use current location option */}
@@ -279,7 +279,7 @@ const Home: React.FC = () => {
                                                 <span className="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse" />
                                                 {t.useCurrentLocation}
                                             </button>
-                                            
+
                                             {/* Cities List */}
                                             {VIRUDHUNAGAR_CITIES.map(city => (
                                                 <button
@@ -288,11 +288,10 @@ const Home: React.FC = () => {
                                                         handleLocationAction(city.toLowerCase());
                                                         setIsDropdownOpen(false);
                                                     }}
-                                                    className={`w-full px-5 py-3 text-left font-semibold text-text-primary transition-colors flex items-center justify-between ${
-                                                        selectedLocation === city.toLowerCase() 
-                                                            ? 'bg-primary/10 text-primary font-black' 
-                                                            : 'hover:bg-gray-50'
-                                                    }`}
+                                                    className={`w-full px-5 py-3 text-left font-semibold text-text-primary transition-colors flex items-center justify-between ${selectedLocation === city.toLowerCase()
+                                                        ? 'bg-primary/10 text-primary font-black'
+                                                        : 'hover:bg-gray-50'
+                                                        }`}
                                                 >
                                                     <span>{city}</span>
                                                     {selectedLocation === city.toLowerCase() && (
@@ -305,7 +304,7 @@ const Home: React.FC = () => {
                                 )}
                             </div>
 
-                            <button 
+                            <button
                                 onClick={() => {
                                     let result = turfs;
                                     if (selectedLocation && selectedLocation !== 'use-location') {
@@ -327,14 +326,14 @@ const Home: React.FC = () => {
                     {/* Map Section */}
                     {selectedLocation && selectedLocation !== 'use-location' && (
                         <div className="max-w-4xl mx-auto mt-6 bg-white p-2 rounded-[16px] shadow-[0_10px_25px_rgba(0,0,0,0.08)] animate-fade-in-up delay-300 border border-gray-100 overflow-hidden h-64">
-                            <iframe 
+                            <iframe
                                 title="Location Map"
-                                width="100%" 
-                                height="100%" 
-                                frameBorder="0" 
-                                scrolling="no" 
-                                marginHeight={0} 
-                                marginWidth={0} 
+                                width="100%"
+                                height="100%"
+                                frameBorder="0"
+                                scrolling="no"
+                                marginHeight={0}
+                                marginWidth={0}
                                 src={`https://maps.google.com/maps?q=${selectedLocation},Virudhunagar&t=&z=13&ie=UTF8&iwloc=&output=embed`}
                                 className="rounded-[12px]"
                             />
@@ -385,7 +384,7 @@ const Home: React.FC = () => {
                         <h2 className="text-3xl font-black italic tracking-tighter text-text-heading">{t.popularTurfsStart}<span className="text-primary">{t.popularTurfsHighlight}</span></h2>
                         <p className="text-text-secondary mt-1 font-bold">{t.popularSubtitle}</p>
                     </div>
-                    <button 
+                    <button
                         onClick={() => navigate('/all-turfs')}
                         className="text-primary font-bold flex items-center hover:underline group"
                     >
@@ -400,7 +399,7 @@ const Home: React.FC = () => {
                             {filteredTurfs.slice(0, 3).map((turf) => (
                                 <TurfCard key={turf.id} {...turf} />
                             ))}
-                            
+
                             {/* Ad Placement 2 - Mid Content (After 3rd card) */}
                             {filteredTurfs.length > 0 && (
                                 <div className="col-span-1 md:col-span-2 lg:col-span-3 py-4">
@@ -428,11 +427,11 @@ const Home: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Cricket */}
-                    <button 
+                    <button
                         onClick={() => {
                             setSelectedSport('Cricket');
-                            const filtered = turfs.filter(t => 
-                                t.name.toLowerCase().includes('cricket') || 
+                            const filtered = turfs.filter(t =>
+                                t.name.toLowerCase().includes('cricket') ||
                                 t.location.toLowerCase().includes('cricket')
                             );
                             setFilteredTurfs(filtered.length > 0 ? filtered : turfs);
@@ -445,14 +444,14 @@ const Home: React.FC = () => {
                             <h3 className="text-3xl font-black text-white italic tracking-tighter group-hover:text-primary transition-colors">CRICKET</h3>
                         </div>
                     </button>
-                    
+
                     {/* Football */}
-                    <button 
+                    <button
                         onClick={() => {
                             setSelectedSport('Football');
-                            const filtered = turfs.filter(t => 
-                                t.name.toLowerCase().includes('football') || 
-                                t.name.toLowerCase().includes('arena') || 
+                            const filtered = turfs.filter(t =>
+                                t.name.toLowerCase().includes('football') ||
+                                t.name.toLowerCase().includes('arena') ||
                                 t.name.toLowerCase().includes('kick') ||
                                 t.name.toLowerCase().includes('fc')
                             );
@@ -468,11 +467,11 @@ const Home: React.FC = () => {
                     </button>
 
                     {/* Badminton */}
-                    <button 
+                    <button
                         onClick={() => {
                             setSelectedSport('Badminton');
-                            const filtered = turfs.filter(t => 
-                                t.name.toLowerCase().includes('badminton') || 
+                            const filtered = turfs.filter(t =>
+                                t.name.toLowerCase().includes('badminton') ||
                                 t.name.toLowerCase().includes('court') ||
                                 t.name.toLowerCase().includes('shuttle')
                             );
