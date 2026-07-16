@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, MapPin, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const resolveUploadUrl = (path: string) => `${API_BASE_URL}${path}`;
+
 const Checkout: React.FC = () => {
     const t = useTranslation();
     const location = useLocation();
@@ -37,7 +40,7 @@ const Checkout: React.FC = () => {
                 const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     const img = parsed[0];
-                    firstImage = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
+                    firstImage = img.startsWith('/uploads') ? resolveUploadUrl(img) : img;
                 }
             } else if (turf.imageUrl) {
                 firstImage = turf.imageUrl;

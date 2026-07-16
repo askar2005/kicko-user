@@ -9,6 +9,9 @@ const VIRUDHUNAGAR_CITIES = [
     "Thiruthangal", "Seithur"
 ];
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const resolveUploadUrl = (path: string) => `${API_BASE_URL}${path}`;
+
 const AllTurfs: React.FC = () => {
     const navigate = useNavigate();
 
@@ -33,7 +36,7 @@ const AllTurfs: React.FC = () => {
                                 const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
                                 if (Array.isArray(parsed) && parsed.length > 0) {
                                     const img = parsed[0];
-                                    imageUrl = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
+                                    imageUrl = img.startsWith('/uploads') ? resolveUploadUrl(img) : img;
                                 }
                             }
                         } catch (e) {

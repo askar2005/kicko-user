@@ -15,6 +15,9 @@ const VIRUDHUNAGAR_CITIES = [
     "Thiruthangal", "Seithur"
 ];
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const resolveUploadUrl = (path: string) => `${API_BASE_URL}${path}`;
+
 const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // Radius of the earth in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -49,6 +52,36 @@ const isLocationMatch = (turf: any, selectedLoc: string) => {
     }
 
     return false;
+};
+
+const mapTurfForCard = (turf: any) => {
+    let imageUrl = 'https://images.unsplash.com/photo-1529900948633-14664539659a?w=800&auto=format&fit=crop';
+    try {
+        if (turf.images) {
+            const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                const img = parsed[0];
+                imageUrl = img.startsWith('/uploads') ? resolveUploadUrl(img) : img;
+            }
+        }
+    } catch (e) {
+        console.error("Failed to parse turf images in Home:", e);
+    }
+
+    return {
+        id: turf.id,
+        name: turf.name,
+        location: turf.location,
+        price: turf.pricePerHour || 1200,
+        rating: 4.8,
+        image: imageUrl,
+        available: true,
+        city: turf.city,
+        area: turf.area,
+        latitude: turf.latitude,
+        longitude: turf.longitude,
+        sportType: turf.sportType
+    };
 };
 
 const Home: React.FC = () => {
@@ -109,50 +142,37 @@ const Home: React.FC = () => {
         return result;
     }, [selectedLocation, userCoords, turfs, searchQuery, selectedSport]);
 
+    const fetchApprovedTurfs = React.useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/turfs?status=APPROVED');
+            if (response.ok) {
+                const data = await response.json();
+                const mappedData = data.map(mapTurfForCard);
+                setTurfs(mappedData);
+                setFilteredTurfs(mappedData);
+            }
+        } catch (error) {
+            console.error("Failed to fetch turfs:", error);
+        }
+    }, []);
+
     React.useEffect(() => {
-        const fetchTurfs = async () => {
-            try {
-                // Fetch only approved turfs from the backend
-                const response = await fetch('http://localhost:5000/api/turfs?status=APPROVED');
-                if (response.ok) {
-                    const data = await response.json();
-                    const mappedData = data.map((turf: any) => {
-                        let imageUrl = 'https://images.unsplash.com/photo-1529900948633-14664539659a?w=800&auto=format&fit=crop';
-                        try {
-                            if (turf.images) {
-                                const parsed = typeof turf.images === 'string' ? JSON.parse(turf.images) : turf.images;
-                                if (Array.isArray(parsed) && parsed.length > 0) {
-                                    const img = parsed[0];
-                                    imageUrl = img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img;
-                                }
-                            }
-                        } catch (e) {
-                            console.error("Failed to parse turf images in Home:", e);
-                        }
-                        return {
-                            id: turf.id,
-                            name: turf.name,
-                            location: turf.location,
-                            price: turf.pricePerHour || 1200,
-                            rating: 4.8, // Default fallback
-                            image: imageUrl,
-                            available: true,
-                            city: turf.city,
-                            area: turf.area,
-                            latitude: turf.latitude,
-                            longitude: turf.longitude,
-                            sportType: turf.sportType
-                        };
-                    });
-                    setTurfs(mappedData);
-                    setFilteredTurfs(mappedData);
-                }
-            } catch (error) {
-                console.error("Failed to fetch turfs:", error);
+        fetchApprovedTurfs();
+
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                fetchApprovedTurfs();
             }
         };
-        fetchTurfs();
-    }, []);
+
+        window.addEventListener('focus', fetchApprovedTurfs);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            window.removeEventListener('focus', fetchApprovedTurfs);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [fetchApprovedTurfs]);
 
     const handleLocationAction = async (value: string) => {
         if (value === 'use-location') {

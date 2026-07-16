@@ -74,6 +74,12 @@ const loadRazorpayScript = () => {
   });
 };
 
+const formatCurrency = (value: number | string | undefined) => {
+  const amount = Number(value || 0);
+  if (!Number.isFinite(amount)) return '₹0';
+  return `₹${amount.toLocaleString('en-IN')}`;
+};
+
 const PaymentOptions: React.FC = () => {
   const t = useTranslation();
   const location = useLocation();
@@ -264,11 +270,11 @@ const PaymentOptions: React.FC = () => {
       <div className="bg-primary/5 p-6 rounded-[24px] border border-primary/10 mb-8 flex justify-between items-center">
         <div>
           <p className="text-[10px] uppercase tracking-widest font-black text-text-description mb-1">{t.payableAmount}</p>
-          <p className="text-3xl font-black text-text-heading italic">â‚¹{totalAmount}</p>
+          <p className="text-3xl font-black text-text-heading italic">{formatCurrency(totalAmount)}</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-bold text-text-secondary">{turfName}</p>
-          <p className="text-[10px] text-text-description font-bold">{date} â€¢ {slots?.length} {t.slots || 'Slots'}</p>
+          <p className="text-[10px] text-text-description font-bold">{date} • {slots?.length} {t.slots || 'Slots'}</p>
         </div>
       </div>
 
@@ -403,7 +409,7 @@ const PaymentOptions: React.FC = () => {
             ) : (
               <>
                 <CheckCircle2 className="mr-2 group-hover:scale-110 transition-transform" />
-                {t.proceedToPay} â‚¹{totalAmount}
+                {t.proceedToPay} {formatCurrency(totalAmount)}
               </>
             )}
           </button>

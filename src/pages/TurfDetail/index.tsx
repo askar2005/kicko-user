@@ -21,6 +21,9 @@ const SLOT_TIMES = [
 
 const normalizeSlotLabel = (slot: string) => slot.replace(/\s*[-\u2013\u2014]\s*/, ' - ').trim();
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const resolveUploadUrl = (path: string) => `${API_BASE_URL}${path}`;
+
 const getLocalDateString = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -91,7 +94,7 @@ const TurfDetail: React.FC = () => {
                     if (!Array.isArray(parsedImages) || parsedImages.length === 0) {
                         parsedImages = turfData.imageUrl ? [turfData.imageUrl] : ['https://images.unsplash.com/photo-1529900948633-14664539659a?w=1200&auto=format&fit=crop'];
                     }
-                    parsedImages = parsedImages.map((img: string) => img.startsWith('/uploads') ? `http://https://aqua-mandrill-716221.hostingersite.com${img}` : img);
+                    parsedImages = parsedImages.map((img: string) => img.startsWith('/uploads') ? resolveUploadUrl(img) : img);
 
                     let parsedSlotPrices: Record<string, number> = {};
                     try {
