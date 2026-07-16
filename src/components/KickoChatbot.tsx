@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -103,7 +103,7 @@ const KickoChatbot: React.FC = () => {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-24 right-5 w-[350px] h-[500px] bg-white rounded-3xl shadow-2xl z-[9999] flex flex-col overflow-hidden border border-gray-100"
+                        className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-5 sm:w-[350px] h-[min(500px,calc(100vh-8rem))] bg-white rounded-3xl shadow-2xl z-[9999] flex flex-col overflow-hidden border border-gray-100"
                     >
                         {/* Header */}
                         <div className="bg-primary p-4 flex items-center justify-between">
@@ -149,7 +149,7 @@ const KickoChatbot: React.FC = () => {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder={language === 'ta' ? 'செய்தியைத் தட்டச்சு செய்க...' : 'Type a message...'}
+                                    placeholder={language === 'ta' ? 'à®šà¯†à®¯à¯à®¤à®¿à®¯à¯ˆà®¤à¯ à®¤à®Ÿà¯à®Ÿà®šà¯à®šà¯ à®šà¯†à®¯à¯à®•...' : 'Type a message...'}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 pr-12 text-sm font-bold text-text-primary focus:outline-none focus:border-primary transition-colors"
                                 />
                                 <button
@@ -168,3 +168,4 @@ const KickoChatbot: React.FC = () => {
 };
 
 export default KickoChatbot;
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { Bell, Menu, X, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
                 </div>
                 {/* Mobile Toggle */}
                 <button
-                    className="md:hidden text-text-heading"
+                    className="md:hidden text-text-heading min-h-[44px] min-w-[44px] flex items-center justify-center"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
                     {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -122,13 +122,13 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden absolute top-full left-4 right-4 bg-white rounded-[16px] border border-gray-100 px-4 py-6 flex flex-col space-y-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] mt-2">
+                <div className="md:hidden absolute top-full left-4 right-4 bg-white rounded-[16px] border border-gray-100 px-4 py-6 flex flex-col space-y-4 shadow-[0_10px_25px_rgba(0,0,0,0.15)] mt-2 max-h-[calc(100vh-6rem)] overflow-y-auto">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
                             to={link.path}
                             className={cn(
-                                "text-lg font-bold",
+                                "text-lg font-bold min-h-[44px] flex items-center",
                                 isActive(link.path) ? "text-primary" : "text-text-primary"
                             )}
                             onClick={() => setIsMobileMenuOpen(false)}
@@ -137,9 +137,12 @@ const Navbar: React.FC = () => {
                         </Link>
                     ))}
                     <div className="pt-4 border-t border-gray-100 flex flex-col space-y-4">
+                        {user && (
+                            <div className="text-sm font-bold text-text-secondary px-1">Hi, {user.name.split(' ')[0]}</div>
+                        )}
                         <Link
                             to="/notifications"
-                            className="flex items-center space-x-3 text-text-primary font-bold"
+                            className="flex items-center space-x-3 text-text-primary font-bold min-h-[44px]"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             <Bell size={20} className="text-primary" />
@@ -147,12 +150,28 @@ const Navbar: React.FC = () => {
                         </Link>
                         <Link
                             to="/settings"
-                            className="flex items-center space-x-3 text-text-primary font-bold"
+                            className="flex items-center space-x-3 text-text-primary font-bold min-h-[44px]"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             <SettingsIcon size={20} className="text-primary" />
                             <span>Settings & Profile</span>
                         </Link>
+                        {user ? (
+                            <button
+                                onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                                className="flex items-center space-x-3 text-red-500 font-bold min-h-[44px]"
+                            >
+                                <LogOut size={20} />
+                                <span>Logout</span>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
+                                className="text-sm font-black text-black bg-primary px-5 py-3 rounded-full hover:bg-primary-dark transition-colors shadow-sm min-h-[44px]"
+                            >
+                                Sign In
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
@@ -166,3 +185,5 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
+

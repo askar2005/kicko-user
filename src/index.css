@@ -1,6 +1,16 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+}
 
 body {
   background: linear-gradient(135deg, #F7FAF9, #EEF3F1);
@@ -60,3 +70,4 @@ button.bg-primary:hover {
   border: 1px solid #E6ECEA;
   box-shadow: 0 4px 20px rgba(30, 42, 39, 0.05);
 }
+

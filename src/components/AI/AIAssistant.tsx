@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Bot, Sparkles } from 'lucide-react';
 
 interface Message {
@@ -37,7 +37,7 @@ const AIAssistant: React.FC = () => {
             setMessages([
                 {
                     id: Date.now().toString(),
-                    text: "Vanakkam nanba! 🙏 Naan dhaan KickoBot. Virudhunagar district la best turf theda naan ready! Enna area la play panna poringa? (e.g., Sivakasi, Rajapalayam, Aruppukkottai)",
+                    text: "Vanakkam nanba! ðŸ™ Naan dhaan KickoBot. Virudhunagar district la best turf theda naan ready! Enna area la play panna poringa? (e.g., Sivakasi, Rajapalayam, Aruppukkottai)",
                     sender: 'ai',
                 }
             ]);
@@ -101,9 +101,9 @@ const AIAssistant: React.FC = () => {
                 });
 
                 const rating = getTurfRating(highestRated);
-                const ratingStr = rating > 0 ? `${rating.toFixed(1)}/5 ⭐` : '(Pudhu turf, innum rating varala!)';
+                const ratingStr = rating > 0 ? `${rating.toFixed(1)}/5 â­` : '(Pudhu turf, innum rating varala!)';
 
-                return `Semma! ${detectedCity.charAt(0).toUpperCase() + detectedCity.slice(1)} area la oru top turf irukku nanba. **${highestRated.name}** dhaan adhu! 🏆<br><br>**Turf Details:**<br>📍 Location: ${highestRated.location}<br>💰 Price: ₹${highestRated.pricePerHour}/hr<br>⭐ Rating: ${ratingStr}<br><br>Kandippa poi vilaiyadu, mass ah irukkum! 🔥⚽`;
+                return `Semma! ${detectedCity.charAt(0).toUpperCase() + detectedCity.slice(1)} area la oru top turf irukku nanba. **${highestRated.name}** dhaan adhu! ðŸ†<br><br>**Turf Details:**<br>ðŸ“ Location: ${highestRated.location}<br>ðŸ’° Price: â‚¹${highestRated.pricePerHour}/hr<br>â­ Rating: ${ratingStr}<br><br>Kandippa poi vilaiyadu, mass ah irukkum! ðŸ”¥âš½`;
             } else {
                 return `Acho! ${detectedCity.charAt(0).toUpperCase() + detectedCity.slice(1)} la innum namma Kicko turf varala nanba. Seekiram kondu vandhuduvom! Vera area try pandriya?`;
             }
@@ -113,30 +113,30 @@ const AIAssistant: React.FC = () => {
         if (lowerInput.includes('cheap') || lowerInput.includes('budget') || lowerInput.includes('kammi')) {
             if (turfs.length === 0) return "En database empty ah irukku boss... Admin innum turfs add pannalaya?";
             const cheapest = [...turfs].sort((a, b) => a.pricePerHour - b.pricePerHour)[0];
-            return `Budget la thedriya? Kavalaye venam! 🧠 **${cheapest.name}** in ${cheapest.location} is perfect for you. Price just ₹${cheapest.pricePerHour}/hr thaan! Enjoy maappi! ⚡`;
+            return `Budget la thedriya? Kavalaye venam! ðŸ§  **${cheapest.name}** in ${cheapest.location} is perfect for you. Price just â‚¹${cheapest.pricePerHour}/hr thaan! Enjoy maappi! âš¡`;
         }
 
         // 3. Search by rating (best)
         if (lowerInput.includes('best') || lowerInput.includes('good') || lowerInput.includes('top') || lowerInput.includes('super')) {
             if (turfs.length === 0) return "Ippo entha turfs um illaye... Konjam wait pannunga.";
-            return `Best turf venuma? Ithu dhaan namma Virudhunagar district oda top choice! 🏆 **${turfs[0].name}** - condition vera level la irukkum. Book it before it's gone! 🦵`;
+            return `Best turf venuma? Ithu dhaan namma Virudhunagar district oda top choice! ðŸ† **${turfs[0].name}** - condition vera level la irukkum. Book it before it's gone! ðŸ¦µ`;
         }
 
         // 4. Funny fallbacks
         const fallbacks = [
-            "Puriyala nanba! 🤔 Enakku Sivakasi, Rajapalayam, Virudhunagar nu unga area pera sonna thaan puriyum. Try again!",
-            "Football aadi evlo naal aachu? ⚽ Enna area la turf thedringa nu sollunga, udane details tharren!",
+            "Puriyala nanba! ðŸ¤” Enakku Sivakasi, Rajapalayam, Virudhunagar nu unga area pera sonna thaan puriyum. Try again!",
+            "Football aadi evlo naal aachu? âš½ Enna area la turf thedringa nu sollunga, udane details tharren!",
             "Yow, naan oru paavamana bot ya. Tanglish la simple ah unga city name mattum type pannunga paarpom!",
-            "Beep boop! Nethu night charge poda maranthutanga polaye, en logic sariya work aagala. Entha area nu marupadiyum sollunga? 🏙️"
+            "Beep boop! Nethu night charge poda maranthutanga polaye, en logic sariya work aagala. Entha area nu marupadiyum sollunga? ðŸ™ï¸"
         ];
         return fallbacks[Math.floor(Math.random() * fallbacks.length)];
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-50 flex flex-col items-end">
             {/* Chat Window */}
             {isOpen && (
-                <div className="mb-4 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 animate-fade-in-up flex flex-col h-[500px]">
+                <div className="mb-4 w-full sm:w-96 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 animate-fade-in-up flex flex-col h-[min(500px,calc(100vh-8rem))]">
                     {/* Header */}
                     <div className="bg-primary p-4 flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -216,3 +216,4 @@ const AIAssistant: React.FC = () => {
 };
 
 export default AIAssistant;
+
