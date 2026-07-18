@@ -19,7 +19,7 @@ const rewriteUrl = (input: RequestInfo | URL) => {
 
 const getApiConfigurationError = (originalUrl: string, rewrittenUrl: string) => {
   if (!isDev && !isLocalPage && isLocalApiRequest(originalUrl) && !configuredApiUrl) {
-    return 'Backend API URL is not configured. Set VITE_API_URL in Vercel to your deployed backend HTTPS URL, then redeploy the user app.';
+    return 'Backend API URL is not configured. Set VITE_API_URL to your deployed backend HTTPS URL, then redeploy this app.';
   }
 
   if (window.location.protocol === 'https:' && rewrittenUrl.startsWith('http://')) {
@@ -51,8 +51,12 @@ window.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
 
     return await originalFetch(input, init);
   } catch (error) {
-    if (error instanceof TypeError && isLocalApiRequest(originalUrl) && !isDev && !isLocalPage) {
-      throw new Error('Could not reach the backend API. Verify VITE_API_URL points to the live backend and that backend CORS allows this frontend domain.');
+    if (error instanceof TypeError && isLocalApiRequest(originalUrl)) {
+      if (isDev || isLocalPage) {
+        throw new Error(`Could not reach backend API at ${API_BASE_URL}. Start kicko-backend-main with npm run dev, or set VITE_API_URL to a running backend URL.`);
+      }
+
+      throw new Error('Could not reach the backend API. Verify VITE_API_URL points to the live backend and backend CORS allows this frontend domain.');
     }
 
     throw error;
