@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useTranslation } from '../../../hooks/useTranslation';
@@ -7,16 +7,41 @@ const Login: React.FC = () => {
     const t = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+
+        if (!email.trim() || !password.trim()) {
+            setError('Email and password are required.');
+            return;
+        }
+
         setIsLoading(true);
-        // Mock Auth
-        setTimeout(() => {
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) throw new Error(data.error || 'Authentication failed');
+            if (!data.token || !data.id) throw new Error('Login response is missing authentication details');
+
+            localStorage.setItem('kicko_user', JSON.stringify(data));
+            localStorage.removeItem('current-user');
+            localStorage.removeItem('user-logged-in');
+            navigate('/', { replace: true });
+        } catch (err: any) {
+            setError(err.message || 'Could not login. Please try again.');
+        } finally {
             setIsLoading(false);
-            navigate('/');
-        }, 1500);
+        }
     };
 
     return (
@@ -27,6 +52,12 @@ const Login: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+                {error && (
+                    <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100">
+                        {error}
+                    </div>
+                )}
+
                 <div className="space-y-2">
                     <label className="text-xs font-black text-text-description uppercase tracking-widest ml-1">{t.emailAddress}</label>
                     <div className="relative group">
@@ -34,6 +65,8 @@ const Login: React.FC = () => {
                         <input
                             type="email"
                             required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="name@example.com"
                             className="w-full bg-white border border-gray-100 rounded-[12px] py-4 pl-12 pr-4 focus:border-primary outline-none transition-all placeholder:text-text-description font-bold text-text-primary shadow-sm"
                         />
@@ -45,9 +78,11 @@ const Login: React.FC = () => {
                     <div className="relative group">
                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-description group-focus-within:text-primary transition-colors" size={20} />
                         <input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             required
-                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
                             className="w-full bg-white border border-gray-100 rounded-[12px] py-4 pl-12 pr-12 focus:border-primary outline-none transition-all placeholder:text-text-description font-bold text-text-primary shadow-sm"
                         />
                         <button

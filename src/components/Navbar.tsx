@@ -20,10 +20,28 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('kicko_user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
+        const syncUser = () => {
+            const storedUser = localStorage.getItem('kicko_user');
+            if (storedUser) {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch {
+                    localStorage.removeItem('kicko_user');
+                    setUser(null);
+                }
+            } else {
+                setUser(null);
+            }
+        };
+
+        syncUser();
+        window.addEventListener('focus', syncUser);
+        window.addEventListener('storage', syncUser);
+
+        return () => {
+            window.removeEventListener('focus', syncUser);
+            window.removeEventListener('storage', syncUser);
+        };
     }, []);
 
     const handleLogout = () => {
@@ -185,5 +203,6 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
 
 

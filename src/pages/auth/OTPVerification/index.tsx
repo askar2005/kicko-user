@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, RefreshCcw } from 'lucide-react';
 import { useTranslation } from '../../../hooks/useTranslation';
@@ -76,14 +76,15 @@ const OTPVerification: React.FC = () => {
 
             if (!regRes.ok) throw new Error(regData.error || "Registration failed");
 
-            // 3. Success! Log them in
-            localStorage.setItem("user-logged-in", "true");
-            localStorage.setItem("current-user", JSON.stringify(regData));
+            // 3. Success! Store the same auth object used by the rest of the user app.
+            localStorage.setItem("kicko_user", JSON.stringify(regData));
+            localStorage.removeItem("user-logged-in");
+            localStorage.removeItem("current-user");
 
             // Clean up
             localStorage.removeItem("signup-user");
 
-            navigate('/');
+            navigate('/', { replace: true });
         } catch (error: any) {
             alert(error.message);
         } finally {
@@ -165,3 +166,5 @@ const OTPVerification: React.FC = () => {
 };
 
 export default OTPVerification;
+
+
