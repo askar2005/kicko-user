@@ -10,7 +10,14 @@ const Checkout: React.FC = () => {
     const t = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
-    const { turfId, slots, date } = (location.state as { turfId: string; slots: string[]; date: string }) || {};
+    const { turfId, slots, date, isBogo, discountAmount, freeSlot } = (location.state as {
+        turfId: string;
+        slots: string[];
+        date: string;
+        isBogo?: boolean;
+        discountAmount?: number;
+        freeSlot?: string;
+    }) || {};
 
     const [turf, setTurf] = React.useState<any>(null);
     const [loading, setLoading] = React.useState(true);
@@ -64,7 +71,9 @@ const Checkout: React.FC = () => {
     };
 
     const rentalFee = slots ? slots.reduce((sum, slot) => sum + getSlotPrice(slot), 0) : 1200;
-    const totalAmount = rentalFee;
+    const bogoDiscount = isBogo && discountAmount ? discountAmount : 0;
+    const totalAmount = Math.max(0, rentalFee - bogoDiscount);
+
     const handlePayment = () => {
         navigate('/payment-options', {
             state: {
@@ -73,7 +82,10 @@ const Checkout: React.FC = () => {
                 turfName: turf?.name || 'Unknown Turf',
                 date: new Date(date).toLocaleDateString(),
                 rawDate: date,
-                slots
+                slots,
+                isBogo,
+                discountAmount: bogoDiscount,
+                freeSlot
             }
         });
     };
@@ -152,6 +164,14 @@ const Checkout: React.FC = () => {
                                 <span className="text-text-secondary font-bold">{t.turfPrice}</span>
                                 <span className="font-black text-text-primary">₹{rentalFee}</span>
                             </div>
+
+                            {isBogo && bogoDiscount > 0 && (
+                                <div className="flex justify-between items-center text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 text-sm font-bold">
+                                    <span className="flex items-center">🎁 BOGO Offer Discount</span>
+                                    <span className="font-black">-₹{bogoDiscount}</span>
+                                </div>
+                            )}
+
                             <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
                                 <span className="text-xl font-black italic text-text-heading">{t.totalAmount}</span>
                                 <span className="text-2xl font-black text-primary italic">₹{totalAmount}</span>

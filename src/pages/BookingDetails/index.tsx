@@ -40,7 +40,10 @@ const BookingDetails: React.FC = () => {
                         price: data.turf?.pricePerHour || 1200,
                         status: data.status,
                         image: data.turf?.image || 'https://images.unsplash.com/photo-1529900948633-14664539659a?w=400&auto=format&fit=crop',
-                        userName: data.user?.name || 'User'
+                        userName: data.user?.name || 'User',
+                        isBogo: data.isBogo,
+                        discountAmount: data.discountAmount,
+                        freeSlot: data.freeSlot,
                     });
                 }
             } catch (err) {
@@ -221,6 +224,13 @@ const BookingDetails: React.FC = () => {
                             <p className="font-bold text-text-primary uppercase">UPI / Card</p>
                         </div>
                     </div>
+
+                    {booking.isBogo && (
+                        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-bold flex justify-between items-center">
+                            <span>🎁 Buy 1 Get 1 Offer Applied</span>
+                            <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-black">FREE SLOT INCLUDED</span>
+                        </div>
+                    )}
 
                     {/* Amount */}
                     <div className="pt-8 border-t border-gray-100 flex justify-between items-center">

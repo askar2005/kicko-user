@@ -62,6 +62,7 @@ const TurfDetail: React.FC = () => {
     const [userComment, setUserComment] = useState('');
     const [submittingReview, setSubmittingReview] = useState(false);
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [bogoOffer, setBogoOffer] = useState<{ hasBogo: boolean; offer: any } | null>(null);
 
     React.useEffect(() => {
         const storedUser = localStorage.getItem('kicko_user');
@@ -207,6 +208,19 @@ const TurfDetail: React.FC = () => {
                     }
                 } catch (e) { }
 
+                // Check BOGO offer for selected date
+                try {
+                    const bogoRes = await fetch(`http://localhost:5000/api/bogo-offers/check?turfId=${id}&date=${selectedDate}`);
+                    if (bogoRes.ok) {
+                        const bogoData = await bogoRes.json();
+                        setBogoOffer(bogoData);
+                    } else {
+                        setBogoOffer({ hasBogo: false, offer: null });
+                    }
+                } catch (e) {
+                    setBogoOffer({ hasBogo: false, offer: null });
+                }
+
             } catch (err) {
                 console.error("Failed to fetch turf details:", err);
             } finally {
@@ -253,6 +267,11 @@ const TurfDetail: React.FC = () => {
             return;
         }
 
+        if (bogoOffer?.hasBogo && !selectedSlots.includes(slotTime) && selectedSlots.length >= 2) {
+            alert("Buy 1 Get 1 offer allows selecting 1 paid slot + 1 free slot (total 2 slots). Deselect a slot to pick another.");
+            return;
+        }
+
         setSelectedSlots(prev => {
             if (prev.includes(slotTime)) {
                 // Deselecting: clear timer
@@ -270,13 +289,40 @@ const TurfDetail: React.FC = () => {
         });
     };
 
+    const isBogoActive = Boolean(bogoOffer?.hasBogo && selectedSlots.length >= 2);
+    const freeSlot = isBogoActive ? selectedSlots[1] : null;
+
+    const getSlotPrice = (slotTime: string) => {
+        if (turf && turf.slotPrices) {
+            const price = turf.slotPrices[slotTime];
+            if (price !== undefined) return Number(price);
+        }
+        return turf ? (turf.pricePerHour || turf.price || 1200) : 1200;
+    };
+
+    const freeSlotPrice = freeSlot ? getSlotPrice(freeSlot) : 0;
+    const rawSelectedTotal = selectedSlots.reduce((sum, slot) => sum + getSlotPrice(slot), 0);
+    const calculateSelectedTotal = () => Math.max(0, rawSelectedTotal - freeSlotPrice);
+
     const handleBook = () => {
         if (selectedSlots.length > 0) {
             if (!currentUser) {
                 setIsAuthModalOpen(true);
                 return;
             }
-            navigate('/checkout', { state: { turfId: id, slots: selectedSlots, date: selectedDate } });
+            navigate('/checkout', {
+                state: {
+                    turfId: id,
+                    slots: selectedSlots,
+                    date: selectedDate,
+                    isBogo: isBogoActive,
+                    bogoOfferId: bogoOffer?.offer?.id,
+                    freeSlot,
+                    discountAmount: freeSlotPrice,
+                    rawTotal: rawSelectedTotal,
+                    totalAmount: calculateSelectedTotal()
+                }
+            });
         }
     };
 
@@ -301,7 +347,6 @@ const TurfDetail: React.FC = () => {
 
             if (res.ok) {
                 const newReview = await res.json();
-                // Add local username for immediate display
                 newReview.user = { name: currentUser.name };
                 setReviews([newReview, ...reviews]);
                 setUserComment('');
@@ -318,18 +363,6 @@ const TurfDetail: React.FC = () => {
     };
 
     const hasUserReviewed = currentUser && reviews.some(r => r.userId === currentUser.id);
-
-    const getSlotPrice = (slotTime: string) => {
-        if (turf && turf.slotPrices) {
-            const price = turf.slotPrices[slotTime];
-            if (price !== undefined) return Number(price);
-        }
-        return turf ? (turf.pricePerHour || turf.price || 1200) : 1200;
-    };
-
-    const calculateSelectedTotal = () => {
-        return selectedSlots.reduce((sum, slot) => sum + getSlotPrice(slot), 0);
-    };
 
     return (
         <div className="pt-24 pb-20 max-w-7xl mx-auto px-4">
@@ -512,6 +545,35 @@ const TurfDetail: React.FC = () => {
                                 <span className="text-text-secondary font-bold">{t.perHour}</span>
                             </div>
 
+                            {/* BOGO Offer Banner */}
+                            {bogoOffer?.hasBogo && (
+                                <div className="mb-6 p-4 rounded-[16px] bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 shadow-sm animate-fade-in">
+                                    <div className="flex items-center space-x-2 text-amber-900 font-black text-sm mb-1">
+                                        <span className="text-base">🎉</span>
+                                        <span>BUY 1 GET 1 OFFER TODAY!</span>
+                                    </div>
+                                    <p className="text-xs font-bold text-amber-800/90 leading-relaxed">
+                                        Book 1 slot and get 1 additional slot FREE.
+                                    </p>
+                                    {selectedSlots.length === 0 && (
+                                        <div className="mt-2 text-xs font-bold text-amber-900 italic">
+                                            👉 Select your first slot to continue.
+                                        </div>
+                                    )}
+                                    {selectedSlots.length === 1 && (
+                                        <div className="mt-2 text-xs font-black text-emerald-800 bg-emerald-100/80 p-2 rounded-xl border border-emerald-200">
+                                            🎉 First slot selected ({selectedSlots[0]}). Select 1 more available slot FREE!
+                                        </div>
+                                    )}
+                                    {selectedSlots.length >= 2 && (
+                                        <div className="mt-2 text-xs font-black text-emerald-900 bg-emerald-100/90 p-2.5 rounded-xl border border-emerald-200 flex justify-between items-center">
+                                            <span>🎁 BOGO Applied! ({selectedSlots[1]} is FREE)</span>
+                                            <span className="bg-emerald-600 text-white px-2 py-0.5 rounded-full text-[10px]">FREE</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Date Selection */}
                             <div className="space-y-4 mb-8">
                                 <label className="text-sm font-black text-text-description uppercase tracking-widest flex items-center">
@@ -534,36 +596,48 @@ const TurfDetail: React.FC = () => {
                                     {t.selectSlot}
                                 </label>
                                 <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {dynamicSlots.map((slot: { time: string; status: string }, idx: number) => (
-                                        <button
-                                            key={idx}
-                                            disabled={slot.status === 'booked' || slot.status === 'blocked'}
-                                            onClick={() => toggleSlot(slot.time)}
-                                            className={`w-full px-6 py-4 rounded-xl text-sm font-bold border transition-all flex justify-between items-center group ${slot.status === 'booked'
-                                                ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-not-allowed line-through opacity-70'
-                                                : slot.status === 'blocked'
-                                                    ? 'bg-rose-50 border-rose-200 text-rose-700 cursor-not-allowed line-through opacity-90'
-                                                    : selectedSlots.includes(slot.time)
-                                                        ? 'bg-primary border-primary text-black'
-                                                        : 'bg-white border-gray-100 text-text-primary hover:border-primary/50 shadow-sm mb-1'
-                                                }`}
-                                        >
-                                            <div className="flex flex-col items-start text-left">
-                                                <span className="text-sm font-bold">{slot.time}</span>
-                                                {slot.status === 'available' && (
-                                                    <span className={`text-xs mt-0.5 ${selectedSlots.includes(slot.time) ? 'text-black/70' : 'text-primary'}`}>
-                                                        ₹{getSlotPrice(slot.time)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            {selectedSlots.includes(slot.time) && (
-                                                <div className="flex items-center space-x-2 bg-black/10 px-3 py-1 rounded-full">
-                                                    <Timer size={14} className="animate-pulse" />
-                                                    <span className="text-xs font-black">{formatTimer(slotTimers[slot.time])}</span>
+                                    {dynamicSlots.map((slot: { time: string; status: string }, idx: number) => {
+                                        const isSelected = selectedSlots.includes(slot.time);
+                                        const isFreeSlot = isBogoActive && slot.time === freeSlot;
+                                        return (
+                                            <button
+                                                key={idx}
+                                                disabled={slot.status === 'booked' || slot.status === 'blocked'}
+                                                onClick={() => toggleSlot(slot.time)}
+                                                className={`w-full px-6 py-4 rounded-xl text-sm font-bold border transition-all flex justify-between items-center group ${slot.status === 'booked'
+                                                    ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-not-allowed line-through opacity-70'
+                                                    : slot.status === 'blocked'
+                                                        ? 'bg-rose-50 border-rose-200 text-rose-700 cursor-not-allowed line-through opacity-90'
+                                                        : isSelected
+                                                            ? isFreeSlot
+                                                                ? 'bg-emerald-500 border-emerald-500 text-white shadow-md'
+                                                                : 'bg-primary border-primary text-black'
+                                                            : 'bg-white border-gray-100 text-text-primary hover:border-primary/50 shadow-sm mb-1'
+                                                    }`}
+                                            >
+                                                <div className="flex flex-col items-start text-left">
+                                                    <span className="text-sm font-bold">{slot.time}</span>
+                                                    {slot.status === 'available' && (
+                                                        <span className={`text-xs mt-0.5 font-extrabold ${isFreeSlot ? 'text-white' : isSelected ? 'text-black/70' : 'text-primary'}`}>
+                                                            {isFreeSlot ? 'FREE (BOGO Offer)' : `₹${getSlotPrice(slot.time)}`}
+                                                        </span>
+                                                    )}
                                                 </div>
-                                            )}
-                                        </button>
-                                    ))}
+                                                {isSelected && (
+                                                    <div className="flex items-center space-x-2 bg-black/10 px-3 py-1 rounded-full">
+                                                        {isFreeSlot ? (
+                                                            <span className="text-xs font-black tracking-wider uppercase text-white">FREE</span>
+                                                        ) : (
+                                                            <>
+                                                                <Timer size={14} className="animate-pulse" />
+                                                                <span className="text-xs font-black">{formatTimer(slotTimers[slot.time])}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -572,8 +646,16 @@ const TurfDetail: React.FC = () => {
                                 <div className="space-y-3 mb-8 p-4 rounded-[12px] bg-primary/5 border border-primary/10 animate-fade-in">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-text-secondary font-bold">{t.rentalFee} ({selectedSlots.length} {selectedSlots.length > 1 ? t.slots : t.slot})</span>
-                                        <span className="text-text-primary font-black">₹{calculateSelectedTotal()}</span>
+                                        <span className="text-text-primary font-black">₹{rawSelectedTotal}</span>
                                     </div>
+
+                                    {isBogoActive && freeSlotPrice > 0 && (
+                                        <div className="flex justify-between text-sm text-emerald-600 font-bold bg-emerald-50/80 p-2 rounded-lg border border-emerald-100">
+                                            <span className="flex items-center">🎁 Buy 1 Get 1 Offer</span>
+                                            <span className="font-black">-₹{freeSlotPrice}</span>
+                                        </div>
+                                    )}
+
                                     <div className="flex justify-between text-sm">
                                         <span className="text-text-secondary font-bold">{t.serviceFee}</span>
                                         <span className="text-text-primary font-black">₹50</span>
