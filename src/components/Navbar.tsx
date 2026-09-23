@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { Bell, Menu, X, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
@@ -60,7 +60,9 @@ const Navbar: React.FC = () => {
 
     const navLinks = [
         { name: t.home, path: '/' },
+        { name: 'Tournaments 🏆', path: '/tournaments' },
         { name: t.myBookings, path: '/bookings' },
+        { name: 'My Tournaments', path: '/my-tournaments' },
     ];
 
     const isActive = (path: string) => location.pathname === path;

@@ -14,6 +14,9 @@ import Notifications from './pages/Notifications/index';
 import PaymentOptions from './pages/PaymentOptions/index';
 import PaymentSuccess from './pages/PaymentSuccess/index';
 import BookingDetails from './pages/BookingDetails';
+import Tournaments from './pages/Tournaments/index';
+import TournamentDetail from './pages/TournamentDetail/index';
+import MyTournaments from './pages/MyTournaments/index';
 
 // Actual Auth Pages
 import Login from './pages/auth/Login/index';
@@ -54,6 +57,9 @@ const AppRoutes: React.FC = () => {
                 <Route path="/payment-options" element={<PaymentOptions />} />
                 <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="/booking-details/:bookingId" element={<BookingDetails />} />
+                <Route path="/tournaments" element={<Tournaments />} />
+                <Route path="/tournaments/:id" element={<TournamentDetail />} />
+                <Route path="/my-tournaments" element={<MyTournaments />} />
 
                 {/* Static Pages */}
                 <Route path="/about" element={<AboutUs />} />
