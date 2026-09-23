@@ -174,9 +174,31 @@ const PaymentOptions: React.FC = () => {
       }
 
       const orderData = await orderRes.json() as {
-        keyId: string;
-        order: { id: string; amount: number; currency: string; receipt?: string };
+        keyId?: string;
+        order?: { id: string; amount: number; currency: string; receipt?: string };
+        isFree?: boolean;
+        bookings?: Array<{ id: string }>;
       };
+
+      if (orderData.isFree) {
+        navigate('/payment-success', {
+          state: {
+            bookingId: orderData.bookings?.[0]?.id || 'FREE_BOOKING',
+            totalAmount: 0,
+            turfName,
+            date,
+            slot: Array.isArray(slots) ? slots.join(', ') : '',
+            slots,
+            paymentMethod: '100% FREE DISCOUNT',
+            userName: bookingIdentity.name,
+          },
+        });
+        return;
+      }
+
+      if (!orderData.keyId || !orderData.order) {
+        throw new Error('Invalid order response from server');
+      }
 
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded || !window.Razorpay) {

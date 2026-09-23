@@ -10,13 +10,16 @@ const Checkout: React.FC = () => {
     const t = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
-    const { turfId, slots, date, isBogo, discountAmount, freeSlot } = (location.state as {
+    const { turfId, slots, date, isBogo, discountAmount, freeSlot, hasSlotDiscount, slotDiscountAmount, rawTotal } = (location.state as {
         turfId: string;
         slots: string[];
         date: string;
         isBogo?: boolean;
         discountAmount?: number;
         freeSlot?: string;
+        hasSlotDiscount?: boolean;
+        slotDiscountAmount?: number;
+        rawTotal?: number;
     }) || {};
 
     const [turf, setTurf] = React.useState<any>(null);
@@ -70,9 +73,10 @@ const Checkout: React.FC = () => {
         return turf ? (turf.pricePerHour || turf.price || 1200) : 1200;
     };
 
-    const rentalFee = slots ? slots.reduce((sum, slot) => sum + getSlotPrice(slot), 0) : 1200;
+    const rentalFee = rawTotal !== undefined ? rawTotal : (slots ? slots.reduce((sum, slot) => sum + getSlotPrice(slot), 0) : 1200);
     const bogoDiscount = isBogo && discountAmount ? discountAmount : 0;
-    const totalAmount = Math.max(0, rentalFee - bogoDiscount);
+    const slotDiscount = !isBogo && hasSlotDiscount && slotDiscountAmount ? slotDiscountAmount : 0;
+    const totalAmount = Math.max(0, rentalFee - bogoDiscount - slotDiscount);
 
     const handlePayment = () => {
         navigate('/payment-options', {
@@ -84,8 +88,10 @@ const Checkout: React.FC = () => {
                 rawDate: date,
                 slots,
                 isBogo,
-                discountAmount: bogoDiscount,
-                freeSlot
+                discountAmount: bogoDiscount > 0 ? bogoDiscount : slotDiscount,
+                freeSlot,
+                hasSlotDiscount,
+                slotDiscountAmount: slotDiscount
             }
         });
     };
@@ -169,6 +175,13 @@ const Checkout: React.FC = () => {
                                 <div className="flex justify-between items-center text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 text-sm font-bold">
                                     <span className="flex items-center">🎁 BOGO Offer Discount</span>
                                     <span className="font-black">-₹{bogoDiscount}</span>
+                                </div>
+                            )}
+
+                            {!isBogo && slotDiscount > 0 && (
+                                <div className="flex justify-between items-center text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 text-sm font-bold">
+                                    <span className="flex items-center">🏷️ Slot Discount</span>
+                                    <span className="font-black">-₹{slotDiscount}</span>
                                 </div>
                             )}
 

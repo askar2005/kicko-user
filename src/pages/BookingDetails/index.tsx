@@ -43,6 +43,7 @@ const BookingDetails: React.FC = () => {
                         userName: data.user?.name || 'User',
                         isBogo: data.isBogo,
                         discountAmount: data.discountAmount,
+                        discountPercentage: data.discountPercentage,
                         freeSlot: data.freeSlot,
                     });
                 }
@@ -229,6 +230,13 @@ const BookingDetails: React.FC = () => {
                         <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-bold flex justify-between items-center">
                             <span>🎁 Buy 1 Get 1 Offer Applied</span>
                             <span className="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-black">FREE SLOT INCLUDED</span>
+                        </div>
+                    )}
+
+                    {!booking.isBogo && booking.discountPercentage > 0 && (
+                        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-bold flex justify-between items-center">
+                            <span>🏷️ {booking.discountPercentage}% Slot Discount Applied</span>
+                            <span className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black">SAVED ₹{booking.discountAmount || 0}</span>
                         </div>
                     )}
 
